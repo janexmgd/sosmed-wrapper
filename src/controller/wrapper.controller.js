@@ -5,10 +5,23 @@ import instaWrapper from '../helper/wrapper/instaWrapper.js';
 import xWrapper from '../helper/wrapper/xWrapper.js';
 const { uploadGD, readerGD, deleteGD } = GoogleDrive;
 const { success, failed } = response;
+
+// regex link
+const TiktokLink =
+  /(https:\/\/www\.tiktok\.com\/@[\w.-]+\/video\/\d+|https:\/\/vt\.tiktok\.com\/[\w.-]+)/g;
+const TwitterLink = /https:\/\/(www\.)?[^/]+\/[^/]+\/status\/\d+\?[^/]+/g;
+const InstaLink =
+  /^https:\/\/www\.instagram\.com\/(?:p|reel)\/[A-Za-z0-9_-]+\/\?(?:[^=&]+=[^&]+&)*[^=&]+=[^&]+/;
+const FacebookLink =
+  /https:\/\/fb\.watch\/[^\s]+|https:\/\/www\.facebook\.com\/[^\s]+/g;
 const wrapperController = {
   tiktokSingle: async (req, res, next) => {
     try {
       const { url } = req.body;
+      const isTiktokLink = url.match(TiktokLink);
+      if (!isTiktokLink) {
+        throw new Error('invalid tiktok URL');
+      }
       const data = await tiktokWrapper(url);
 
       success(res, {
@@ -77,6 +90,10 @@ const wrapperController = {
   igDL: async (req, res, next) => {
     try {
       const { url } = req.body;
+      const isInstaLink = url.match(InstaLink);
+      if (!isInstaLink) {
+        throw new Error('invalid instagram URL');
+      }
       if (!url) {
         throw new Error('no url provided');
       }
@@ -102,6 +119,10 @@ const wrapperController = {
   xDL: async (req, res, next) => {
     try {
       const { url } = req.body;
+      const isTwitterLink = url.match(TwitterLink);
+      if (!isTwitterLink) {
+        throw new Error('invalid twitter URL');
+      }
       if (!url) {
         throw new Error('no url provided');
       }
