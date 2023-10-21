@@ -7,17 +7,13 @@ const { uploadGD, readerGD, deleteGD } = GoogleDrive;
 const { success, failed } = response;
 
 // regex link
-const TiktokLink =
-  /(https:\/\/www\.tiktok\.com\/@[\w.-]+\/video\/\d+|https:\/\/vt\.tiktok\.com\/[\w.-]+)/g;
-const TwitterLink = /https:\/\/(www\.)?[^/]+\/[^/]+\/status\/\d+\?[^/]+/g;
-
-const InstaLink =
-  /^https:\/\/www\.instagram\.com\/(?:p|reel)\/[A-Za-z0-9_-]+\/\?(?:[^=&]+=[^&]+&)*[^=&]+=[^&]+/;
 const FacebookLink =
   /https:\/\/fb\.watch\/[^\s]+|https:\/\/www\.facebook\.com\/[^\s]+/g;
 const wrapperController = {
   tiktokSingle: async (req, res, next) => {
     try {
+      const TiktokLink =
+        /(https:\/\/www\.tiktok\.com\/@[\w.-]+\/video\/\d+|https:\/\/vt\.tiktok\.com\/[\w.-]+)/g;
       const { url } = req.body;
       const isTiktokLink = url.match(TiktokLink);
       if (!isTiktokLink) {
@@ -90,6 +86,9 @@ const wrapperController = {
   },
   igDL: async (req, res, next) => {
     try {
+      const InstaLink =
+        /^https:\/\/www\.instagram\.com\/(?:p|reel)\/[A-Za-z0-9_-]+\/\?(?:[^=&]+=[^&]+&)*[^=&]+=[^&]+/;
+
       const { url } = req.body;
       const isInstaLink = url.match(InstaLink);
       if (!isInstaLink) {
@@ -119,25 +118,31 @@ const wrapperController = {
   },
   xDL: async (req, res, next) => {
     try {
+      const TwitterLink = /https:\/\/(www\.)?twitter\.com\/[^/]+\/status\/\d+/;
+
       const { url } = req.body;
-      const isTwitterLink = url.match(TwitterLink);
-      if (!isTwitterLink) {
-        throw new Error('invalid twitter URL');
-      }
       if (!url) {
         throw new Error('no url provided');
       }
-      const data = await xWrapper(url);
-      // console.log(data);
-      if (data.status == 'error') {
-        throw new Error(data.message);
+      console.log(TwitterLink);
+      console.log(url);
+      const isTwitterLink = url.match(TwitterLink);
+      if (isTwitterLink) {
+        const data = await xWrapper(url);
+        // console.log(data);
+        if (data.status == 'error') {
+          throw new Error(data.message);
+        }
+        success(res, {
+          code: 200,
+          status: 'success',
+          message: 'Success get data',
+          data: data.result,
+        });
+      } else {
+        throw new Error('invalid twitter URL');
       }
-      success(res, {
-        code: 200,
-        status: 'success',
-        message: 'Success get data',
-        data: data.result,
-      });
+
       return;
     } catch (error) {
       if (
