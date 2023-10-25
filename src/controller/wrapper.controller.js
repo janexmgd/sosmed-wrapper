@@ -2,7 +2,9 @@ import response from '../helper/response.js';
 import tiktokWrapper from '../helper/wrapper/tiktokWrapper.js';
 import GoogleDrive from '../helper/googleDrive.js';
 import instaWrapper from '../helper/wrapper/instaWrapper.js';
+import urlModule from 'url';
 import xWrapper from '../helper/wrapper/xWrapper.js';
+import instaPostWrapper from '../helper/wrapper/instaPostwrapper.js';
 const { uploadGD, readerGD, deleteGD } = GoogleDrive;
 const { success, failed } = response;
 
@@ -87,20 +89,84 @@ const wrapperController = {
   igDL: async (req, res, next) => {
     try {
       const InstaLink =
-        /^https:\/\/www\.instagram\.com\/(?:p|reel)\/[A-Za-z0-9_-]+\/\?(?:[^=&]+=[^&]+&)*[^=&]+=[^&]+/;
+        /^https:\/\/www\.instagram\.com\/(?:p|reel)\/[A-Za-z0-9_-]+(?:\?[^/]+)?/;
 
       const { url } = req.body;
+      if (!url) {
+        throw new Error('no url provided');
+      }
       const isInstaLink = url.match(InstaLink);
       if (!isInstaLink) {
         throw new Error('invalid instagram URL');
       }
-      if (!url) {
-        throw new Error('no url provided');
-      }
       const data = await instaWrapper(url);
+      let arr;
+
+      if (data.length > 1) {
+        arr = {
+          isCarousel: true,
+          length: data.length,
+          mediaUrl: [],
+        };
+      } else {
+        arr = {
+          isCarousel: false,
+          length: data.length,
+          mediaUrl: [],
+        };
+      }
+      data.forEach((element) => {
+        const urlMedia = element.download_link;
+        const parsedUrl = urlModule.parse(urlMedia);
+        const pathnameSegments = parsedUrl.pathname.split('/');
+        const filenameQuery = pathnameSegments[pathnameSegments.length - 1];
+        const filename = filenameQuery.split('?')[0];
+        const extensionMatch = filename.match(/\.(\w+)$/);
+        if (extensionMatch) {
+          const extension = extensionMatch[1];
+          if (extension == 'jpg') {
+            // for image
+            arr.mediaUrl.push({
+              type: 'image',
+              url: urlMedia,
+            });
+          } else {
+            // for video
+            arr.mediaUrl.push({
+              type: 'video',
+              url: urlMedia,
+            });
+          }
+        } else {
+          //exception reels ig
+          arr.mediaUrl.push({
+            type: 'video',
+            url: urlMedia,
+          });
+        }
+      });
       if (!data) {
         throw new Error('invalid url');
       }
+      success(res, {
+        code: 200,
+        status: 'success',
+        message: 'Success get data',
+        data: arr,
+      });
+      return;
+    } catch (error) {
+      return failed(res, {
+        code: error.code || 500,
+        status: 'error' || 'failed',
+        message: error.message || 'internal server error',
+      });
+    }
+  },
+  igPost: async (req, res, next) => {
+    try {
+      const { username } = req.body;
+      const data = await instaPostWrapper(username);
       success(res, {
         code: 200,
         status: 'success',
