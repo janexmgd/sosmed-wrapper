@@ -8,9 +8,7 @@ const fetcher = (username) => {
       .user(username, { count: 9999999, userAgent: agent })
       .then((data) => {
         if (data.auth_error == true) {
-          resolve({
-            error: 'true',
-          });
+          resolve(data);
         } else {
           resolve(data);
         }
@@ -40,12 +38,13 @@ export const postWrapper = async (username) => {
         url: url,
       };
       data.posts.push(eachPost);
-      console.log(`post ==> ${data.posts.length}`);
     }
-    console.log(data);
+    // console.log(data);
+    console.log(data.posts.length);
     return data;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 // a('renebaebae');
