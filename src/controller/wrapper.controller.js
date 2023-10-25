@@ -4,7 +4,8 @@ import GoogleDrive from '../helper/googleDrive.js';
 import instaWrapper from '../helper/wrapper/instaWrapper.js';
 import urlModule from 'url';
 import xWrapper from '../helper/wrapper/xWrapper.js';
-import instaPostWrapper from '../helper/wrapper/instaPostwrapper.js';
+// import instaPostWrapper from '../helper/wrapper/instaPostwrapper.js';
+import { postWrapper } from '../helper/wrapper/ass.js';
 const { uploadGD, readerGD, deleteGD } = GoogleDrive;
 const { success, failed } = response;
 
@@ -166,14 +167,7 @@ const wrapperController = {
   igPost: async (req, res, next) => {
     try {
       const { username } = req.body;
-      const data = await new Promise((resolve, reject) => {
-        try {
-          const a = instaPostWrapper(username);
-          resolve(a);
-        } catch (error) {
-          reject(error);
-        }
-      });
+      const data = await postWrapper(username);
       success(res, {
         code: 200,
         status: 'success',

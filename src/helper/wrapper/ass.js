@@ -1,11 +1,29 @@
 import instatouch from 'instatouch';
+import randUserAgent from 'rand-user-agent';
 import epochNow from '../epochNow.js';
-
-const instaPostWrapper = async (username) => {
+const agent = randUserAgent('desktop');
+const fetcher = (username) => {
+  return new Promise((resolve, reject) => {
+    instatouch
+      .user(username, { count: 9999999, userAgent: agent })
+      .then((data) => {
+        if (data.auth_error == true) {
+          resolve({
+            error: 'true',
+          });
+        } else {
+          resolve(data);
+        }
+      })
+      .catch((er) => {
+        reject(er);
+      });
+  });
+};
+export const postWrapper = async (username) => {
   try {
-    const fetchProfile = await instatouch.user(username, {
-      count: 9999999,
-    });
+    // console.log(agent);
+    const fetchProfile = await fetcher(username);
     const data = {
       username: username,
       fetchAt: epochNow(),
@@ -28,10 +46,6 @@ const instaPostWrapper = async (username) => {
     return data;
   } catch (error) {
     console.log(error);
-    // reject(error);
-    return error;
   }
 };
-
-instaPostWrapper('renebaebae');
-// export default instaPostWrapper;
+// a('renebaebae');
