@@ -166,7 +166,14 @@ const wrapperController = {
   igPost: async (req, res, next) => {
     try {
       const { username } = req.body;
-      const data = await instaPostWrapper(username);
+      const data = await new Promise((resolve, reject) => {
+        try {
+          const a = instaPostWrapper(username);
+          resolve(a);
+        } catch (error) {
+          reject(error);
+        }
+      });
       success(res, {
         code: 200,
         status: 'success',
