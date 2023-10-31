@@ -90,40 +90,37 @@ const getUserFeed = async (secUid, count, cursor) => {
     return error;
   }
 };
-const tiktokFeed = (username) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const userInfo = await getAccountJsonInfo(username);
-
-      let cursor = 0;
-      let hasMore = true;
-      const postList = [];
-      while (hasMore) {
-        const data = await getUserFeed(userInfo.secUid, 30, cursor);
-        for (const key in data.itemList) {
-          const item = data.itemList[key];
-          (hasMore = data.hasMore), (cursor = data.cursor);
-          const post = {
-            id: item.id,
-            author: item.author.uniqueId,
-            desc: item.desc,
-            createTime: item.createTime,
-            url: `https://www.tiktok.com/@${userInfo.username}/video/${item.id}`,
-          };
-          postList.push(post);
-          console.log(postList.length);
-        }
+const tiktokFeed = async (username) => {
+  try {
+    const userInfo = await getAccountJsonInfo(username);
+    let cursor = 0;
+    let hasMore = true;
+    const postList = [];
+    while (hasMore) {
+      const data = await getUserFeed(userInfo.secUid, 30, cursor);
+      for (const key in data.itemList) {
+        const item = data.itemList[key];
+        (hasMore = data.hasMore), (cursor = data.cursor);
+        const post = {
+          id: item.id,
+          author: item.author.uniqueId,
+          desc: item.desc,
+          createTime: item.createTime,
+          url: `https://www.tiktok.com/@${userInfo.username}/video/${item.id}`,
+        };
+        postList.push(post);
+        console.log(postList.length);
       }
-      const userData = {
-        ...userInfo,
-        feedLength: postList.length,
-        feedList: postList,
-      };
-
-      resolve(userData);
-    } catch (error) {
-      reject(error);
     }
-  });
+    const userData = {
+      ...userInfo,
+      feedLength: postList.length,
+      feedList: postList,
+    };
+
+    return userData;
+  } catch (error) {
+    return error;
+  }
 };
 export default tiktokFeed;
