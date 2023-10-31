@@ -9,10 +9,11 @@ const app_port = process.env.APP_PORT;
 
 // console.log(typeof process.cwd());
 app.listen(app_port || 3000, '0.0.0.0', () => {
-  console.log(`${app_name} RUN at PORT ${app_port}`);
+  console.log(`${app_name} REST API RUN at PORT ${app_port}`);
 });
 app.get('/', (req, res) => {
   res.status(200).send({
+    app_name,
     status: 'ok',
   });
 });

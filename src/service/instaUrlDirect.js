@@ -1,7 +1,7 @@
 import IgDL from '@sasmeee/igdl';
 
 // const i = async (url) => {};
-const instaWrapper = (url) => {
+const instaUrlDirect = (url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await IgDL(url);
@@ -11,4 +11,4 @@ const instaWrapper = (url) => {
     }
   });
 };
-export default instaWrapper;
+export default instaUrlDirect;

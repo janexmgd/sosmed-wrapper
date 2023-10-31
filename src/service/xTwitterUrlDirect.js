@@ -1,6 +1,5 @@
 import { TwitterDL } from 'twitter-downloader';
-// const i = async (url) => {};
-const xWrapper = (url) => {
+const xTwitterUrldirect = (url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await TwitterDL(url);
@@ -10,4 +9,4 @@ const xWrapper = (url) => {
     }
   });
 };
-export default xWrapper;
+export default xTwitterUrldirect;

@@ -1,5 +1,7 @@
 import express from '../app/express.js';
-import wrapperRouter from './wrapper.router.js';
+import dlRouter from './dl.router.js';
+import feedRouter from './feed.router.js';
 const router = express.Router();
-router.use(wrapperRouter);
+router.use(dlRouter);
+router.use(feedRouter);
 export default router;

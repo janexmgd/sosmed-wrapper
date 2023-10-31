@@ -8,6 +8,7 @@ const instaPostWrapper = async (username) => {
     });
     const data = {
       username: username,
+      authError: fetchProfile.auth_error,
       fetchAt: epochNow(),
       postCount: fetchProfile.count,
       posts: [],
@@ -33,5 +34,5 @@ const instaPostWrapper = async (username) => {
   }
 };
 
-instaPostWrapper('renebaebae');
-// export default instaPostWrapper;
+// instaPostWrapper('renebaebae');
+export default instaPostWrapper;

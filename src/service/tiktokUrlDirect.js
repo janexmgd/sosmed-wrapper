@@ -1,4 +1,4 @@
-import client from '../client.js';
+import client from '../helper/client.js';
 
 const base_urls = [
   'https://api19-normal-c-useast1a.tiktokv.com',
@@ -126,13 +126,11 @@ const getTiktokNoWM = async (url, parse, retryCount = 3) => {
         throw new Error('Failed to fetch data');
       }
     } catch (error) {
-      // throw { status: 'fail', message: 'Failed to fetch data!' };
-      // console.log('Parser error : Failed to fetch data!');
       getTiktokNoWM(url, true, (retryCount = retryCount - 1));
     }
   }
 };
-const TiktokWrapper = (url) => {
+const tiktokUrlDirect = (url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await getTiktokNoWM(url, true);
@@ -169,4 +167,4 @@ const TiktokWrapper = (url) => {
     }
   });
 };
-export default TiktokWrapper;
+export default tiktokUrlDirect;

@@ -1,18 +1,21 @@
 import response from '../helper/response.js';
-import tiktokWrapper from '../helper/wrapper/tiktokWrapper.js';
-import GoogleDrive from '../helper/googleDrive.js';
-import instaWrapper from '../helper/wrapper/instaWrapper.js';
 import urlModule from 'url';
-import xWrapper from '../helper/wrapper/xWrapper.js';
-// import instaPostWrapper from '../helper/wrapper/instaPostwrapper.js';
-import { postWrapper } from '../helper/wrapper/ass.js';
+
+// service
+import tiktokUrlDirect from '../service/tiktokUrlDirect.js';
+import instaUrlDirect from '../service/instaUrlDirect.js';
+import xTwitterUrldirect from '../service/xTwitterUrlDirect.js';
+import instaPostWrapper from '../helper/wrapper/instaPostwrapper.js';
+
+//helper
+import GoogleDrive from '../helper/googleDrive.js';
 const { uploadGD, readerGD, deleteGD } = GoogleDrive;
 const { success, failed } = response;
 
 // regex link
 const FacebookLink =
   /https:\/\/fb\.watch\/[^\s]+|https:\/\/www\.facebook\.com\/[^\s]+/g;
-const wrapperController = {
+const dlController = {
   tiktokSingle: async (req, res, next) => {
     try {
       const TiktokLink =
@@ -22,7 +25,7 @@ const wrapperController = {
       if (!isTiktokLink) {
         throw new Error('invalid tiktok URL');
       }
-      const data = await tiktokWrapper(url);
+      const data = await tiktokUrlDirect(url);
 
       success(res, {
         code: 200,
@@ -62,7 +65,7 @@ const wrapperController = {
 
         for (const url of urlList) {
           promises.push(
-            tiktokWrapper(url).then((dataPerIndex) => {
+            tiktokUrlDirect(url).then((dataPerIndex) => {
               data.push(dataPerIndex);
             })
           );
@@ -100,7 +103,7 @@ const wrapperController = {
       if (!isInstaLink) {
         throw new Error('invalid instagram URL');
       }
-      const data = await instaWrapper(url);
+      const data = await instaUrlDirect(url);
       let arr;
 
       if (data.length > 1) {
@@ -167,7 +170,8 @@ const wrapperController = {
   igPost: async (req, res, next) => {
     try {
       const { username } = req.body;
-      const data = await postWrapper(username);
+      // const data = await fetchProfile(username);
+      const data = await instaPostWrapper(username);
       success(res, {
         code: 200,
         status: 'success',
@@ -191,11 +195,9 @@ const wrapperController = {
       if (!url) {
         throw new Error('no url provided');
       }
-      console.log(TwitterLink);
-      console.log(url);
       const isTwitterLink = url.match(TwitterLink);
       if (isTwitterLink) {
-        const data = await xWrapper(url);
+        const data = await xTwitterUrldirect(url);
         // console.log(data);
         if (data.status == 'error') {
           throw new Error(data.message);
@@ -212,6 +214,7 @@ const wrapperController = {
 
       return;
     } catch (error) {
+      console.log(error);
       if (
         error.message ==
         'There was an error getting twitter id. Make sure your twitter url is correct!'
@@ -231,4 +234,4 @@ const wrapperController = {
     }
   },
 };
-export default wrapperController;
+export default dlController;
