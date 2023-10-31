@@ -111,7 +111,6 @@ const tiktokFeed = (username) => {
             url: `https://www.tiktok.com/@${userInfo.username}/video/${item.id}`,
           };
           postList.push(post);
-          console.log(postList.length);
         }
       }
       const userData = {
