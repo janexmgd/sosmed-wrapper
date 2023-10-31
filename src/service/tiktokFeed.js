@@ -86,7 +86,9 @@ const getUserFeed = async (secUid, count, cursor) => {
       },
     });
     return res.data;
-  } catch (error) {}
+  } catch (error) {
+    return error;
+  }
 };
 const tiktokFeed = (username) => {
   return new Promise(async (resolve, reject) => {
