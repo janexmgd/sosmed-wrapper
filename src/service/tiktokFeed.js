@@ -56,7 +56,7 @@ const getAccountJsonInfo = async (username) => {
     const end = response.data.indexOf('</script>', start);
 
     if (end === -1) {
-      throw new Error('TikTok returned an invalid response.');
+      throw new Error('TikTok returned an invalid response');
     }
 
     const jsonData = response.data.slice(
@@ -72,12 +72,14 @@ const getAccountJsonInfo = async (username) => {
     const defaultScope = data.__DEFAULT_SCOPE__;
     const userDetail = defaultScope['webapp.user-detail'];
     const user = userDetail.userInfo.user;
-    return {
+    const userInfo = {
       id: user.id,
       username: user.uniqueId,
       nickname: user.nickname,
       secUid: user.secUid,
     };
+    console.log(userInfo);
+    return userInfo;
   } catch (error) {
     console.log(error);
   }
@@ -91,7 +93,6 @@ const getUserFeed = async (secUid, count, cursor) => {
       count: count,
       is_encryption: 1,
     };
-    console.log('starting fetch userfeed');
 
     delete client.defaults.headers;
     const xTTParams = createXttParams(new URLSearchParams(param).toString());
@@ -104,9 +105,10 @@ const getUserFeed = async (secUid, count, cursor) => {
         'x-tt-params': xTTParams,
       },
     });
-    if (res.data) {
-      console.log('found user feed');
-    }
+    // if (res.data) {
+    //   console.log('found user feed');
+    // }
+    // console.log(res);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -118,15 +120,20 @@ const tiktokFeed = (username) => {
   return new Promise(async (resolve, reject) => {
     try {
       const userInfo = await getAccountJsonInfo(username);
-
+      // return console.log(userInfo);
       let cursor = 0;
       let hasMore = true;
       const postList = [];
       while (hasMore) {
-        const data = await getUserFeed(userInfo.secUid, 30, cursor);
+        // console.log('start scrap user feed');
+        const secUid = userInfo.secUid;
+        const data = await getUserFeed(secUid, 30, cursor);
         for (const key in data.itemList) {
           const item = data.itemList[key];
-          (hasMore = data.hasMore), (cursor = data.cursor);
+          hasMore = data.hasMore;
+          cursor = data.cursor;
+          console.log('hasMore == ' + hasMore);
+          console.log('cursor == ' + cursor);
           const post = {
             id: item.id,
             author: item.author.uniqueId,
