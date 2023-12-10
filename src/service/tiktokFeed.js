@@ -34,35 +34,52 @@ const musicallyHeader = {
     'com.zhiliaoapp.musically/2022405010 (Linux; U; Android 7.1.2; en; ASUS_Z01QD; Build/N2G48H;tt-ok/3.12.13.1)',
 };
 
+// fixed https://github.com/davidteather/TikTok-Api/blob/main/TikTokApi/api/video.py
 const getAccountJsonInfo = async (username) => {
   try {
     const base_url = `https://www.tiktok.com/@${username}`;
-    const res = await client({
+    const response = await client({
       url: base_url,
       method: 'GET',
+      headers:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
     });
-    const html = res.data;
-    const jsonPattern =
-      /<script id="SIGI_STATE" type="application\/json">(.*?)<\/script>/s;
-    const findJson = html.match(jsonPattern);
-    if (findJson) {
-      const jsonData = JSON.parse(findJson[1]);
-      let userInfo;
-      for (const key in jsonData.UserModule.users) {
-        const item = jsonData.UserModule.users[key];
-        userInfo = {
-          id: item.id,
-          username: item.uniqueId,
-          nickname: item.nickname,
-          secUid: item.secUid,
-        };
-      }
-      return userInfo;
-    } else {
-      throw new Error('cant get account json info');
+    // const html = res.data;
+    const start = response.data.indexOf(
+      '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">'
+    );
+
+    if (start === -1) {
+      throw new Error('TikTok returned an invalid response.');
     }
+
+    const end = response.data.indexOf('</script>', start);
+
+    if (end === -1) {
+      throw new Error('TikTok returned an invalid response.');
+    }
+
+    const jsonData = response.data.slice(
+      start +
+        '<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">'
+          .length,
+      end
+    );
+    const data = JSON.parse(jsonData);
+    if (data) {
+      console.log('found json account');
+    }
+    const defaultScope = data.__DEFAULT_SCOPE__;
+    const userDetail = defaultScope['webapp.user-detail'];
+    const user = userDetail.userInfo.user;
+    return {
+      id: user.id,
+      username: user.uniqueId,
+      nickname: user.nickname,
+      secUid: user.secUid,
+    };
   } catch (error) {
-    return error;
+    console.log(error);
   }
 };
 const getUserFeed = async (secUid, count, cursor) => {
@@ -74,6 +91,8 @@ const getUserFeed = async (secUid, count, cursor) => {
       count: count,
       is_encryption: 1,
     };
+    console.log('starting fetch userfeed');
+
     delete client.defaults.headers;
     const xTTParams = createXttParams(new URLSearchParams(param).toString());
     const res = await client({
@@ -85,11 +104,16 @@ const getUserFeed = async (secUid, count, cursor) => {
         'x-tt-params': xTTParams,
       },
     });
+    if (res.data) {
+      console.log('found user feed');
+    }
     return res.data;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
+
 const tiktokFeed = (username) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -118,6 +142,7 @@ const tiktokFeed = (username) => {
         feedLength: postList.length,
         feedList: postList,
       };
+      console.log(userData);
 
       resolve(userData);
     } catch (error) {
@@ -126,3 +151,4 @@ const tiktokFeed = (username) => {
   });
 };
 export default tiktokFeed;
+// tiktokFeed('jkt48.indira.s');
