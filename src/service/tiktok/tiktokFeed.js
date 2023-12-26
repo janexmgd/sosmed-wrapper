@@ -57,6 +57,7 @@ const tiktokFeed = async (secUid, cursor) => {
         'x-tt-params': xTTParams,
       },
     });
+    console.log(res.data);
     const postList = [];
     let uniqueId;
     let nickname;
@@ -85,8 +86,6 @@ const tiktokFeed = async (secUid, cursor) => {
       hasMore: res.data.hasMore,
       itemList: postList,
     };
-    console.log(data);
-    console.log(res.data);
     return data;
   } catch (error) {
     console.error(error);
