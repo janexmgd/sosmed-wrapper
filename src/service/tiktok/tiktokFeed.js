@@ -86,6 +86,7 @@ const tiktokFeed = async (secUid, cursor) => {
       itemList: postList,
     };
     console.log(data);
+    console.log(res.data);
     return data;
   } catch (error) {
     console.error(error);
