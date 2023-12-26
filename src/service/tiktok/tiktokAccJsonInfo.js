@@ -1,5 +1,6 @@
 import client from '../../helper/client.js';
 
+// fixed https://github.com/davidteather/TikTok-Api/blob/main/TikTokApi/api/video.py
 const getAccountJsonInfo = async (username) => {
   try {
     const base_url = `https://www.tiktok.com/@${username}`;
@@ -18,7 +19,10 @@ const getAccountJsonInfo = async (username) => {
     const end = response.data.indexOf('</script>', start);
 
     if (start === -1 || end === -1) {
-      throw new Error('TikTok returned an invalid response.');
+      throw {
+        code: 500,
+        message: 'Tiktok returned invalid response',
+      };
     }
 
     const jsonData = response.data.slice(
@@ -36,7 +40,6 @@ const getAccountJsonInfo = async (username) => {
       nickname: user.nickname,
       secUid: user.secUid,
     };
-    console.log(userInfo);
     return userInfo;
   } catch (error) {
     console.error(error.message);

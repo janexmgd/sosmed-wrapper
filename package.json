@@ -9,7 +9,7 @@
     "start": "node index.js",
     "dev": "node --watch index.js"
   },
-  "author": "",
+  "author": "janemxgd",
   "license": "ISC",
   "dependencies": {
     "@sasmeee/igdl": "^1.0.0",
