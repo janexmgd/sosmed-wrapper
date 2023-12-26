@@ -81,7 +81,7 @@ const getAccountJsonInfo = async (username) => {
     console.log(userInfo);
     return userInfo;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 const getUserFeed = async (secUid, count, cursor) => {
