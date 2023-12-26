@@ -1,9 +1,12 @@
 import axios from 'axios';
 (async () => {
   try {
+    const base_url = 'https://sosmed-wrapper.vercel.app';
+    // const base_url = 'http://localhost:9876';
+    // const base_url = 'https://long-gold-crab-cuff.cyclic.app';
     const username = 'jkt48.indira.s';
     const userInfoResponse = await axios.get(
-      `http://localhost:9876/tiktok/user-info?username=${username}`
+      `${base_url}/tiktok/user-info?username=${username}`
     );
 
     const secUid = userInfoResponse.data.data.secUid;
@@ -14,7 +17,7 @@ import axios from 'axios';
 
     while (hasMore) {
       const userFeedResponse = await axios.get(
-        `http://localhost:9876/tiktok/user-feed?secUid=${secUid}&cursor=${cursor}`
+        `${base_url}/tiktok/user-feed?secUid=${secUid}&cursor=${cursor}`
       );
       const {
         hasMore: feedHasMore,

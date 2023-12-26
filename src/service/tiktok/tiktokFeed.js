@@ -65,6 +65,7 @@ const tiktokFeed = async (secUid, cursor) => {
       uniqueId = item.author.uniqueId;
       nickname = item.author.nickname;
       id = item.author.id;
+      console.log(id);
       const post = {
         id: item.id,
         author: item.author.uniqueId,
@@ -83,8 +84,10 @@ const tiktokFeed = async (secUid, cursor) => {
       hasMore: res.data.hasMore,
       itemList: postList,
     };
+    console.log(hasMore);
     return data;
   } catch (error) {
+    console.error(error);
     return error;
   }
 };
