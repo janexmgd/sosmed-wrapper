@@ -63,7 +63,7 @@ const tiktokFeed = async (secUid, cursor) => {
     );
     // console.log(res.data.itemList);
     if (!res.data.itemList) {
-      console.log(res.data);
+      console.log(res);
       throw new Error('tiktok not returned data');
     }
     const postList = [];
