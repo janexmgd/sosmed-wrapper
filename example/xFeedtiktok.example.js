@@ -2,8 +2,8 @@ import axios from 'axios';
 (async () => {
   try {
     // const base_url = 'https://sosmed-wrapper.vercel.app';
-    // const base_url = 'http://localhost:9876';
-    const base_url = 'https://long-gold-crab-cuff.cyclic.app';
+    const base_url = 'http://localhost:9876';
+    // const base_url = 'https://long-gold-crab-cuff.cyclic.app';
     const username = 'jkt48.indira.s';
     const userInfoResponse = await axios.get(
       `${base_url}/tiktok/user-info?username=${username}`

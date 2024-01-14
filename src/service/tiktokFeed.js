@@ -93,7 +93,6 @@ const getUserFeed = async (secUid, count, cursor) => {
       count: count,
       is_encryption: 1,
     };
-
     delete client.defaults.headers;
     const xTTParams = createXttParams(new URLSearchParams(param).toString());
     const res = await client({

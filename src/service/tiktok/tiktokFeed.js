@@ -1,4 +1,5 @@
 import client from '../../helper/client.js';
+import axios from 'axios';
 import { createCipheriv } from 'node:crypto';
 
 const createXttParams = (params) => {
@@ -45,7 +46,8 @@ const tiktokFeed = async (secUid, cursor) => {
         count: '30',
         is_encryption: 1,
       };
-
+      const r = await axios.get(`https://www.tiktok.com/`);
+      const combinedCookie = r.headers['set-cookie'].join('; ');
       delete client.defaults.headers;
       const xTTParams = createXttParams(new URLSearchParams(param).toString());
       const res = await client({
@@ -55,9 +57,11 @@ const tiktokFeed = async (secUid, cursor) => {
           'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.35',
           'x-tt-params': xTTParams,
+          Cookie: combinedCookie,
         },
       });
       // console.log(res.data.itemList);
+      console.log(res);
       if (!res.data.itemList) {
         console.log(res.data);
         console.log('not returned data');
@@ -67,6 +71,7 @@ const tiktokFeed = async (secUid, cursor) => {
       let uniqueId;
       let nickname;
       let id;
+
       for (const key in res.data.itemList) {
         const item = res.data.itemList[key];
         uniqueId = item.author.uniqueId;
