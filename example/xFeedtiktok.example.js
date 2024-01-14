@@ -19,7 +19,6 @@ import axios from 'axios';
       const userFeedResponse = await axios.get(
         `${base_url}/tiktok/user-feed?secUid=${secUid}&cursor=${cursor}`
       );
-      console.log(userFeedResponse);
       const {
         hasMore: feedHasMore,
         cursor: feedCursor,
@@ -31,7 +30,6 @@ import axios from 'axios';
 
       postList.push(...itemList);
     }
-
     const data = {
       id: userInfoResponse.data.data.id,
       uniqueId: userInfoResponse.data.data.uniqueId,
@@ -40,6 +38,7 @@ import axios from 'axios';
       itemList: postList,
     };
 
+    // console.log(data.postList.length);
     console.log(data);
   } catch (error) {
     console.error(error?.response?.data);

@@ -100,6 +100,8 @@ const getUserFeed = async (secUid, count, cursor) => {
       headers: {
         ...musicallyHeader,
         'User-Agent':
+          'com.zhiliaoapp.musically/2022405010 (Linux; U; Android 7.1.2; en; ASUS_Z01QD; Build/N2G48H;tt-ok/3.12.13.1)',
+        'User-Agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.35',
         'x-tt-params': xTTParams,
       },
