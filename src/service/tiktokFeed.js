@@ -128,12 +128,16 @@ const tiktokFeed = (username) => {
         // console.log('start scrap user feed');
         const secUid = userInfo.secUid;
         const data = await getUserFeed(secUid, 30, cursor);
+        if (!data.itemList) {
+          console.log('failed');
+          throw new Error('tiktok not returned data');
+        }
         for (const key in data.itemList) {
           const item = data.itemList[key];
           hasMore = data.hasMore;
           cursor = data.cursor;
-          console.log('hasMore == ' + hasMore);
-          console.log('cursor == ' + cursor);
+          // console.log('hasMore == ' + hasMore);
+          // console.log('cursor == ' + cursor);
           const post = {
             id: item.id,
             author: item.author.uniqueId,
@@ -159,3 +163,8 @@ const tiktokFeed = (username) => {
 };
 export default tiktokFeed;
 // tiktokFeed('jkt48.indira.s');
+// getUserFeed(
+//   'MS4wLjABAAAAiIR3Nw-_Bnj0WkOr-aSOeCA-9ZJtx3hnI-7rkhAut_85NPoAFMoGm62FrIrNk0MX',
+//   30,
+//   0
+// );
