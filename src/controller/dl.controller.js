@@ -1,6 +1,6 @@
 import response from '../helper/response.js';
 import urlModule from 'url';
-
+import axios from 'axios';
 // service
 import tiktokUrlDirect from '../service/tiktokUrlDirect.js';
 import instaUrlDirect from '../service/instaUrlDirect.js';
@@ -25,21 +25,51 @@ const dlController = {
       if (!isTiktokLink) {
         throw new Error('invalid tiktok URL');
       }
-      const data = await tiktokUrlDirect(url);
-
+      const { data } = await axios.post(
+        `https://api.cobalt.tools/api/json`,
+        {
+          url: url,
+        },
+        {
+          headers: {
+            accept: 'application/json',
+            'accept-language': 'en-US,en;q=0.9',
+            'cache-control': 'no-cache',
+            'content-type': 'application/json',
+            origin: 'https://cobalt.tools',
+            pragma: 'no-cache',
+            priority: 'u=1, i',
+            referer: 'https://cobalt.tools/',
+            'sec-ch-ua':
+              '"Not/A)Brand";v="8", "Chromium";v="126", "Brave";v="126"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'sec-gpc': '1',
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+          },
+        }
+      );
+      // console.log(data);
+      // const data = await tiktokUrlDirect(url);
+      // console.log(data);
       success(res, {
         code: 200,
         status: 'success',
         message: 'Success get data',
-        data: data,
+        data: data.url,
       });
       return;
     } catch (error) {
-      return failed(res, {
-        code: error.code || 500,
-        status: 'error' || 'failed',
-        message: error.message || 'internal server error',
-      });
+      console.log(error);
+      // return failed(res, {
+      //   code: error.code || 500,
+      //   status: 'error' || 'failed',
+      //   message: error.message || 'internal server error',
+      // });
     }
   },
   tiktokMulti: async (req, res, next) => {

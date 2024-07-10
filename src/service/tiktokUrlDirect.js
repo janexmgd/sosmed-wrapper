@@ -95,8 +95,9 @@ const getTiktokNoWM = async (url, parse, retryCount = 3) => {
   if (typeof parse !== 'boolean') {
     throw new Error('PARSE must be a boolean!');
   }
-
+  // console.log(url);
   const videoId = await getVideoId(url);
+  // console.log(videoId);
   if (!videoId) {
     throw { status: 'fail', message: 'Video id not found!' };
   } else {
@@ -110,7 +111,7 @@ const getTiktokNoWM = async (url, parse, retryCount = 3) => {
         url: apiUrl,
         method: 'GET',
       });
-
+      console.log(result);
       if (result.data && result.status === 200) {
         current_base_url_index += 1;
 
@@ -123,6 +124,7 @@ const getTiktokNoWM = async (url, parse, retryCount = 3) => {
           };
         }
       } else {
+        console.log(`fail`);
         throw new Error('Failed to fetch data');
       }
     } catch (error) {
@@ -134,6 +136,7 @@ const tiktokUrlDirect = (url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await getTiktokNoWM(url, true);
+      console.log(response);
       const data = response.result;
       if (data.type == 'video') {
         const videoUrl = data.details.video_url;
