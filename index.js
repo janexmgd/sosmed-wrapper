@@ -3,7 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import response from './src/helper/response.js';
 import cors from 'cors';
-app.use(cors);
+app.use(cors());
 const { success } = response;
 dotenv.config();
 const app_name = process.env.APP_NAME;
